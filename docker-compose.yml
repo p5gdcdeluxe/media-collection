@@ -1,0 +1,28 @@
+# Docker Compose configuration for Media Collection Manager
+# Defines services for database and application with consolidated port 8999
+
+version: '3.8'
+
+services:
+  # PostgreSQL database service
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: media_collection
+      POSTGRES_USER: media_user
+      POSTGRES_PASSWORD: media_password
+
+  # Application service
+  app:
+    build: .
+    ports:
+      - "8999:8999"  # Consolidated default port
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://media_user:media_password@db:5432/media_collection
+
+volumes:
+  postgres_data:
