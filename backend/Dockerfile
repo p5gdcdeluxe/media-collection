@@ -2,15 +2,16 @@ FROM node:16-alpine
 
 WORKDIR /app
 
-# Copy package specifications first
+# Copy package files first to leverage Docker layer caching
 COPY package*.json ./
 
-# Install dependencies cleanly, relying on alpine's fast resolver
-RUN npm ci --omit=dev || npm install --production
+# Install all dependencies reliably
+RUN npm install
 
-# Copy the rest of your 2000+ lines of application code
+# Copy application source code
 COPY . .
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start:dev"]
+# Match whatever start script your package.json uses (e.g., "start" or "start:dev")
+CMD ["npm", "start"]
