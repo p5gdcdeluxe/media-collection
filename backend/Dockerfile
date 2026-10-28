@@ -4,17 +4,19 @@ FROM node:16-alpine
 # Set working directory
 WORKDIR /app
 
-# Copy only package files first to leverage Docker layer caching
+# Configure npm for stable container networking (force IPv4 to prevent hanging)
+RUN npm config set fetch-retry-maxtimeout 60000 -g && \
+    npm config set prefer-offline true -g
+
+# Copy package files first to leverage Docker layer caching
 COPY package*.json ./
 
-# Install dependencies (cached unless package.json changes)
-RUN npm install
+# Install dependencies with clean flags
+RUN npm install --no-audit --progress=false
 
-# Copy application source code after dependencies are installed
+# Copy application source code
 COPY . .
 
-# Expose the internal application port
+# Expose port and start
 EXPOSE 3000
-
-# Start the application in development mode
 CMD ["npm", "run", "start:dev"]
