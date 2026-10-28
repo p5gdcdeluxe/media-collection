@@ -1,22 +1,16 @@
-# Base image for Node.js application
 FROM node:16-alpine
 
-# Set working directory
 WORKDIR /app
 
-# Configure npm for stable container networking (force IPv4 to prevent hanging)
-RUN npm config set fetch-retry-maxtimeout 60000 -g && \
-    npm config set prefer-offline true -g
-
-# Copy package files first to leverage Docker layer caching
+# Copy package specifications first
 COPY package*.json ./
 
-# Install dependencies with clean flags
-RUN npm install --no-audit --progress=false
+# Install dependencies cleanly, relying on alpine's fast resolver
+RUN npm ci --omit=dev || npm install --production
 
-# Copy application source code
+# Copy the rest of your 2000+ lines of application code
 COPY . .
 
-# Expose port and start
 EXPOSE 3000
+
 CMD ["npm", "run", "start:dev"]
