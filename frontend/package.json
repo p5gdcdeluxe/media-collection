@@ -1,0 +1,25 @@
+{
+  "name": "media-collection-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for DVD/BluRay collection manager",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "13.4.19",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "axios": "^1.4.0",
+    "react-icons": "^4.10.1",
+    "react-query": "^3.39.3",
+    "framer-motion": "^10.16.4"
+  },
+  "devDependencies": {
+    "eslint": "8.46.0",
+    "eslint-config-next": "13.4.19"
+  }
+}
