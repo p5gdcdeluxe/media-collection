@@ -38,7 +38,7 @@ services:
       - DB_USER=media_user
       - DB_PASSWORD=media_password
       - DB_NAME=media_collection
-      - DATABASE_URL: postgresql://media_user:media_password@db:5432/media_collection
+      - DATABASE_URL= postgresql://media_user:media_password@db:5432/media_collection
 
 volumes:  
     postgres_data:
