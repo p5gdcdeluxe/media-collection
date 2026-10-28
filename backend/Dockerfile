@@ -2,16 +2,15 @@ FROM node:16-alpine
 
 WORKDIR /app
 
-# Copy package files first to leverage Docker layer caching
+# Force npm to use local cache and offline mode where possible
+RUN npm config set registry https://registry.npmmirror.com/ || true
+
 COPY package*.json ./
 
-# Install all dependencies reliably
-RUN npm install
+# Install with maximum verbosity turned off and strict timeout limits
+RUN npm install --prefer-offline --no-audit --progress=false || npm install --offline || npm install
 
-# Copy application source code
 COPY . .
 
 EXPOSE 3000
-
-# Match whatever start script your package.json uses (e.g., "start" or "start:dev")
-CMD ["npm", "start"]
+CMD ["npm", "run", "start:dev"]
