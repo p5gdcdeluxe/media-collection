@@ -1,28 +1,44 @@
-# Docker Compose configuration for Media Collection Manager
-# Defines services for database and application with consolidated port 8999
-
-version: '3.8'
-
 services:
-  # PostgreSQL database service
-  db:
-    image: postgres:13
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: media_collection
-      POSTGRES_USER: media_user
-      POSTGRES_PASSWORD: media_password
-
-  # Application service
-  app:
-    build: .
+  # PostgreSQL database service  
+  db:  
+    image: postgres:13  
+    container_name: media_db
+    restart: unless-stopped
+    volumes:  
+      - postgres_data:/var/lib/postgresql/data  
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:  
+      POSTGRES_DB: media_collection  
+      POSTGRES_USER: media_user  
+      POSTGRES_PASSWORD: media_password  
     ports:
-      - "8999:8999"  # Consolidated default port
-    depends_on:
-      - db
-    environment:
-      DATABASE_URL: postgresql://media_user:media_password@db:5432/media_collection
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U media_user -d media_collection"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-volumes:
-  postgres_data:
+  # Application service  
+  app:  
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: media_app
+    restart: unless-stopped
+    ports:  
+      - "8999:3000"  # Maps host port 8999 to container's port 3000
+    depends_on:  
+      db:
+        condition: service_healthy
+    environment:  
+      - PORT=3000
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=media_user
+      - DB_PASSWORD=media_password
+      - DB_NAME=media_collection
+      - DATABASE_URL: postgresql://media_user:media_password@db:5432/media_collection
+
+volumes:  
+    postgres_data:
