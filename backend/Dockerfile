@@ -2,13 +2,13 @@ FROM node:16-alpine
 
 WORKDIR /app
 
-# Force npm to use local cache and offline mode where possible
+# Force npm to use local cache and mirror
 RUN npm config set registry https://registry.npmmirror.com/ || true
 
 COPY package*.json ./
 
-# Install with maximum verbosity turned off and strict timeout limits
-RUN npm install --prefer-offline --no-audit --progress=false || npm install --offline || npm install
+# Stream every single package and action live to your terminal
+RUN npm install --verbose
 
 COPY . .
 
