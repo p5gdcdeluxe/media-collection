@@ -22,7 +22,7 @@ services:
   # Application service  
   app:  
     build: 
-      ccontext: .                  # <--- Point to the root folder
+      context: .                  # <--- Point to the root folder
       dockerfile: ./backend/Dockerfile # <--- Point to the Dockerfile location
       network: host
     container_name: media_app
