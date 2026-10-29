@@ -24,6 +24,7 @@ services:
     build: 
       context: ./backend
       dockerfile: Dockerfile
+      network: host
     container_name: media_app
     restart: unless-stopped
     ports:  
